@@ -1,0 +1,91 @@
+class MyLexer(object):
+
+    keywords = ("and" , "begin" , "boolean" , "break" , "class" , "continue" , "else" , "end" , "for" , "function" , "if" , "int" , "implements" , "interface" , "new" , "nil" , "not" , "or" , "real" , "return" , "then", "void" , "while" , "readInt" , "readReal" , "readString" , "print" , "String")
+
+
+    tokens = [k.upper() for k in keywords] + ["EQ","BIT_OR", "BIT_XOR", "BIT_AND", "EQEQ", "NTEQ", "LT", "LE", "GT", "GE", "LSHIFT", "RSHIFT", "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "MODULUS", "LSQUARE", "RSQUARE", "LPAREN", "RPAREN", "LCURLY", "RCURLY", "DOT", "INTEGER_LITERAL", "FLOAT_LITERAL", "STRING_LITERAL", "BOOLEAN_LITERAL", "IDENTIFIER", "STMT_TERMINATOR", "COMMA", "DCOLON"]
+
+
+    t_ignore = ' \t\f'                  ## ignore whitespace
+
+    t_MULTIPLY = r'\*'
+    t_DIVIDE = r'/'
+    t_PLUS = r'\+'
+    t_MINUS = r'-'
+    t_MODULUS = r'%'
+
+    t_BIT_OR = r'\|'
+    t_BIT_XOR = r'\^'
+    t_BIT_AND = r'&'
+    t_LSHIFT = r'<<'
+    t_RSHIFT = r'>>'
+
+    t_GT = r'>'
+    t_GE = r'>='
+    t_LT = r'<'
+    t_LE = r'<='
+    t_NTEQ = r'~='
+    t_EQEQ = r'=='
+    t_EQ = r'='
+
+    t_LSQUARE = r'\['
+    t_RSQUARE = r'\]'
+    t_LPAREN = r'\('
+    t_RPAREN = r'\)'
+    t_LCURLY = r'{'
+    t_RCURLY = r'}'
+    t_DOT = r'\.'
+    t_COMMA = r','
+    t_DCOLON = r'::'
+    t_STMT_TERMINATOR = r';'
+
+    t_ignore_LINE_COMMENT = '--.*'
+
+    def t_BLOCK_COMMENT(self, t):
+        r'--\[\[(.|\n)*?--\]\]'
+        t.lexer.lineno += t.value.count('\n')
+
+
+    def t_STRING_LITERAL(self, t):
+        r'\"[^\\\n"]*["\\\n]'
+        if t.value.endswith('\n'):
+            t_error(t)
+        else:
+            t.value = t.value[1:-1]
+        return t
+
+    def t_FLOAT_LITERAL(self, t):
+        r'\d+\.\d+'
+        t.value = float(t.value)
+        return t
+
+    def t_BOOLEAN_LITERAL(self, t):
+        r'true|false'
+        if t.value == 'true':
+            t.value = True
+        else:
+            t.value = False
+        return t
+
+    def t_INTEGER_LITERAL(self, t):
+        r'\d+'
+        t.value = int(t.value)
+        return t
+
+    def t_IDENTIFIER(self, t):
+        '[A-Za-z_$][A-Za-z0-9_$]*'
+        if t.value in MyLexer.keywords:
+            t.type = t.value.upper()
+        return t
+
+    def t_newline(self, t):
+        r'\n+'
+        t.lexer.lineno += len(t.value)
+
+    def t_newlineWINDOWS(self, t):
+        r'(\r\n)+'
+        t.lexer.lineno += len(t.value) / 2
+
+    def t_error(self, t):
+        print("Illegal character '{}' ({}) in line {}".format(t.value[0], hex(ord(t.value[0])), t.lexer.lineno))
+        t.lexer.skip(1)
