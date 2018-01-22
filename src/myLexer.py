@@ -8,18 +8,21 @@ class MyLexer(object):
 
     t_ignore = ' \t\f'                  ## ignore whitespace
 
+    ## ARITHMETIC OPERATORS
     t_MULTIPLY = r'\*'
     t_DIVIDE = r'/'
     t_PLUS = r'\+'
     t_MINUS = r'-'
     t_MODULUS = r'%'
 
+    ## BITWISE OPERATIONS
     t_BIT_OR = r'\|'
     t_BIT_XOR = r'\^'
     t_BIT_AND = r'&'
     t_LSHIFT = r'<<'
     t_RSHIFT = r'>>'
 
+    ## RELATIONAL OPERATIONS
     t_GT = r'>'
     t_GE = r'>='
     t_LT = r'<'
@@ -28,6 +31,7 @@ class MyLexer(object):
     t_EQEQ = r'=='
     t_EQ = r'='
 
+    ## LITERALS
     t_LSQUARE = r'\['
     t_RSQUARE = r'\]'
     t_LPAREN = r'\('
@@ -39,13 +43,16 @@ class MyLexer(object):
     t_DCOLON = r'::'
     t_STMT_TERMINATOR = r';'
 
+    ## SINGLE LINE COMMENT
     t_ignore_LINE_COMMENT = '--.*'
 
+    ## MULTI-LINE COMMENT -> --[[ SOME TEXT + NEWLINE --]]
     def t_BLOCK_COMMENT(self, t):
         r'--\[\[(.|\n)*?--\]\]'
         t.lexer.lineno += t.value.count('\n')
 
 
+    ## STRING LITERAL -> "SOME TEXT"
     def t_STRING_LITERAL(self, t):
         r'\"[^\\\n"]*["\\\n]'
         if t.value.endswith('\n'):
@@ -54,11 +61,13 @@ class MyLexer(object):
             t.value = t.value[1:-1]
         return t
 
+    ## FLOAT_LITERAL -> NUM DOT NUM
     def t_FLOAT_LITERAL(self, t):
         r'\d+\.\d+'
         t.value = float(t.value)
         return t
 
+    ## BOOLEAN LITERAL -> either TRUE or FALSE
     def t_BOOLEAN_LITERAL(self, t):
         r'true|false'
         if t.value == 'true':
@@ -67,13 +76,15 @@ class MyLexer(object):
             t.value = False
         return t
 
+    ## INTEGER LITERAL -> NUM
     def t_INTEGER_LITERAL(self, t):
         r'\d+'
         t.value = int(t.value)
         return t
 
+    ## IDENTIFIER -> ALPHA { ALPHANUMERIC or DOT or UNDERSCORE }
     def t_IDENTIFIER(self, t):
-        '[A-Za-z_$][A-Za-z0-9_$]*'
+        '[A-Za-z_$][A-Za-z0-9_.]*'
         if t.value in MyLexer.keywords:
             t.type = t.value.upper()
         return t
