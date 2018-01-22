@@ -25,7 +25,7 @@ def iterateOverToken():
 
 
 def prettyPrintTokens():
-    print('%10s | %10s | %20s'%("Token", "Occurrances", "Lexemes",))
+    print('%20s | %10s | %20s'%("Token", "Occurrances", "Lexemes",))
 
     for k,v in tokenTable.items():
         if v[0] == 0:
@@ -33,10 +33,10 @@ def prettyPrintTokens():
         else:
             lv = list(v[1])
             l = len(lv)
-            print('%20s | %10d | %20s'%(k, v[0], lv[0],))
+            print('%20s |  %10d | %20s'%(k, v[0], lv[0],))
             #print('{0:10} | {0:10} | {0:10}'.format(k, v[0],lv[0]))
             for x in range(1,l):
-                print('%20s   %10s   %20s'%("", "", lv[x],))
+                print('%20s    %10s   %20s'%("", "", lv[x],))
 
 if __name__ == "__main__":
     tokens = MyLexer.tokens
