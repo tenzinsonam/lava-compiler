@@ -1,7 +1,13 @@
+#!/usr/bin/env python
+
+import os.path
+import sys
+
+sys.path.extend(['./src/','../src/'])
+
 import ply.lex as lex
 from myLexer import MyLexer
 import argparse
-import os.path
 
 def getTestFileName():
     argParser = argparse.ArgumentParser(description='Provide the filename which is to be lexed')
@@ -26,6 +32,7 @@ def iterateOverToken():
 
 def prettyPrintTokens():
     print('%20s | %10s | %20s'%("Token", "Occurrances", "Lexemes",))
+    print('-'*60)
 
     for k,v in tokenTable.items():
         if v[0] == 0:

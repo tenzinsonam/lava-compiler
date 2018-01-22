@@ -61,9 +61,10 @@ class MyLexer(object):
             t.value = t.value[1:-1]
         return t
 
-    ## FLOAT_LITERAL -> NUM DOT NUM
+    ## FLOAT_LITERAL -> NUM DOT NUM [ EXPONENT PART ]
     def t_FLOAT_LITERAL(self, t):
-        r'\d+\.\d+'
+        r'\d+\.\d+[e|E]?[+|-]?\d+'
+        ## Should I report an error here in case of any overflows?
         t.value = float(t.value)
         return t
 
